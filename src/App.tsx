@@ -1,26 +1,86 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
+import {Solution} from "./interfaces/solution";
+
+import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
+
+import {generateSolutions} from "./services/solutionServices";
+import Serpentin from "./components/Serpentin";
+import Pagination from '@mui/material/Pagination';
+
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [isLoading, setIsLoading] = useState(false)
+
+    const [time, setTime] = useState(null);
+    const [solutions, setSolutions] = useState<Solution[] | null>(null);
+    const [solution, setSolution] = useState<Solution | null>(null);
+    const [page, setPage] = useState(1);
+
+    async function OnClickGenerate() {
+        setIsLoading(true);
+        setSolutions(null);
+        setTime(null);
+        const response = await generateSolutions()
+            .then(res => res.json())
+            .then(data => {
+                setTime(data.time);
+                const fetchedSolutions = data.solutions;
+                setSolutions(fetchedSolutions);
+                if (fetchedSolutions && fetchedSolutions.length > 0) {
+                    setSolution(fetchedSolutions![0])
+                }
+            })
+        setIsLoading(false);
+    }
+
+    // @ts-ignore
+    return (
+        <div className="App">
+            <div id="serpentin" className="serpentin">
+                <Serpentin solution={solution}></Serpentin>
+            </div>
+            <div className='solutions'>
+                <Button variant="outlined"
+                        onClick={OnClickGenerate}>Générer toutes les
+                    solutions</Button>
+                {isLoading && <CircularProgress/>}
+                {time && <p>Temps de calcul : {time}s </p>}
+                {solutions && solutions
+                    .slice((page - 1) * 100, page * 100)
+                    .map((sol: Solution) => <List>
+                        <ListItem disablePadding>
+                            <ListItemButton>
+                                <ListItemText
+                                    key={sol.Id}
+                                    primary={sol.unknowns.toString()}
+                                    onClick={() => {
+                                        const element = document.getElementById("serpentin");
+                                        element!.scrollIntoView({behavior: "smooth"});
+                                        setSolution(sol)
+                                    }}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>)}
+                {solutions?.length &&
+                    <Pagination count={Math.floor(solutions!.length / 100 + 1)}
+                                color="primary"
+                                onChange={(event: React.ChangeEvent<unknown>,
+                                           page: number) => {
+                                    setPage(page);
+                                    const element = document.getElementById("serpentin");
+                                    element!.scrollIntoView({behavior: "smooth"});
+                                }}/>}
+            </div>
+        </div>
+    );
 }
 
 export default App;
