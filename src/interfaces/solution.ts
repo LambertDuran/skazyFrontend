@@ -1,5 +1,5 @@
 export interface Solution{
-    Id: number;
+    id: number;
     unknowns: number[];
     bIsValid: boolean;
 }

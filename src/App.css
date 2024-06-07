@@ -15,8 +15,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: sticky;
-  top: 15em;
+}
+
+.active_sol{
+  background-color: gray;
+  border-radius: 0.2em;
+  padding: 0.25em;
 }
 
 .serpentin{
