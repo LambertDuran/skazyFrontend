@@ -1,15 +1,24 @@
 import {Solution} from "../interfaces/solution";
+import SerpentinInput from "./SerpentinInput";
 import "../components/Serpentin.css"
+import Button from "@mui/material/Button";
 
 interface SerpentinProps {
     solution: Solution | null;
+    setSolution: (sol: Solution | null) => void;
 }
 
-const Serpentin: React.FC<SerpentinProps> = ({solution}) => {
+const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution}) => {
     let unknowns = solution?.unknowns ?? null;
     return (
         <div className="grid">
-            <div className="colorCell">{unknowns ? unknowns[0] : ''}</div>
+            <div className="colorCell">
+                <SerpentinInput
+                    unknown={unknowns ? unknowns[0] : null}
+                    index={0}
+                    solution={solution}
+                    setSolution={setSolution}/>
+            </div>
             <div className="empty_cell"></div>
             <div className="colorCell">{unknowns ? unknowns[4] : ''}</div>
             <div className="cell">-</div>
@@ -56,6 +65,15 @@ const Serpentin: React.FC<SerpentinProps> = ({solution}) => {
             <div className="cell">x</div>
             <div className="colorCell">{unknowns ? unknowns[7] : ''}</div>
             <div className="cell">:</div>
+
+            <Button
+                variant='text'
+                style={{
+                    marginLeft: '0.25em',
+                    paddingLeft: '2em'
+                }}>
+                Modifier
+            </Button>
         </div>
     );
 };

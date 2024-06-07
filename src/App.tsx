@@ -62,7 +62,7 @@ function App() {
     return (
         <div className="App">
             <div id="serpentin" className="serpentin">
-                <Serpentin solution={solution}></Serpentin>
+                <Serpentin solution={solution} setSolution={setSolution}></Serpentin>
             </div>
             <div className='solutions'>
                 <div>
@@ -81,8 +81,8 @@ function App() {
                 {solutions && solutions
                     .slice((page - 1) * nbElementsByPage, page * nbElementsByPage)
                     .map((sol: Solution) =>
-                        <List>
-                            <ListItem key={sol.id} disablePadding>
+                        <List key={sol.id}>
+                            <ListItem disablePadding>
                                 <ListItemButton>
                                     <ListItemText
                                         primary={sol.unknowns.toString()}
