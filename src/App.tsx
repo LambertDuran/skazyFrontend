@@ -16,7 +16,7 @@ import Pagination from '@mui/material/Pagination';
 
 function App() {
 
-    const nbElementsByPage = 5;
+    const nbElementsByPage = 4;
 
     const [isLoading, setIsLoading] = useState(false)
 
@@ -25,7 +25,7 @@ function App() {
     const [solution, setSolution] = useState<Solution | null>(null);
     const [page, setPage] = useState(1);
 
-    async function OnClickGenerate() {
+    async function HandleClickGenerate() {
         setIsLoading(true);
         setSolutions(null);
         setTime(null);
@@ -42,15 +42,16 @@ function App() {
         setIsLoading(false);
     }
 
-    async function OnClickDeleteAll() {
+    async function HandleClickDeleteAll() {
         const response = await deleteSolutions()
             .then(s => {
+                setTime(null);
                 setSolution(null);
                 setSolutions(null);
             });
     }
 
-    async function OnClickDelete(id: number, solutions: Solution[]) {
+    async function HandleClickDelete(id: number, solutions: Solution[]) {
         const response = await deleteSolution(id)
             .then(s => {
                 deleteSolution(id)
@@ -68,21 +69,21 @@ function App() {
                 <div>
                     <Button
                         variant="outlined"
-                        onClick={OnClickDeleteAll}
+                        onClick={HandleClickDeleteAll}
                         style={{marginRight: "1em"}}>
                         Tout supprimer</Button>
                     <Button variant="outlined"
-                            onClick={OnClickGenerate}>
+                            onClick={HandleClickGenerate}>
                         Générer toutes les
                         solutions</Button>
                     {isLoading && <CircularProgress/>}
                 </div>
                 {time && <p>Temps de calcul : {time}s </p>}
-                {solutions && solutions
-                    .slice((page - 1) * nbElementsByPage, page * nbElementsByPage)
-                    .map((sol: Solution) =>
-                        <List key={sol.id}>
-                            <ListItem disablePadding>
+                <List>
+                    {solutions && solutions
+                        .slice((page - 1) * nbElementsByPage, page * nbElementsByPage)
+                        .map((sol: Solution) =>
+                            <ListItem disablePadding key={sol.id}>
                                 <ListItemButton>
                                     <ListItemText
                                         primary={sol.unknowns.toString()}
@@ -95,11 +96,13 @@ function App() {
                                     />
                                 </ListItemButton>
                                 <Button variant="contained"
-                                        onClick={() => { OnClickDelete(sol.id, solutions) }}>
+                                        onClick={() => {
+                                            HandleClickDelete(sol.id, solutions)
+                                        }}>
                                     x
                                 </Button>
-                            </ListItem>
-                        </List>)}
+                            </ListItem>)}
+                </List>
                 {solutions?.length &&
                     <Pagination count={Math.floor(solutions!.length / nbElementsByPage + 1)}
                                 color="primary"
