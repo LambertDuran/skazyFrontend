@@ -3,37 +3,28 @@ import SerpentinInput from "./SerpentinInput";
 import "../components/Serpentin.css"
 import Button from "@mui/material/Button";
 import {updateSolution} from "../services/solutionServices";
+import {useEffect, useState} from "react";
 
 interface SerpentinProps {
     solution: Solution | null;
     setSolution: (sol: Solution | null) => void;
-    solutions: Solution[] | null;
-    setSolutions: (sol: Solution[] | null) => void;
 }
 
-const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution, solutions, setSolutions}) => {
-    const tempSol = solution ? {...solution} : null;
+const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution}) => {
 
-    //tempSol?.unknowns = [1,2,3,4,5,6,7,8,9];
+    const [tempSol, setTempSol] = useState<Solution | null>(null);
 
-    //console.log('tempSol', tempSol)
-    //console.log('sol.unknownsghfjgyjy', solution?.unknowns)
+    useEffect(() => {
+        setTempSol(solution ? {...solution} : null);
+    }, [solution]);
+
 
     async function handleModify() {
         if (!tempSol) return;
         await updateSolution(tempSol)
             .then(res => res.json())
             .then(data => {
-               setSolution(data);
-                //if(!solutions) return;
-                //let newSolutions = [...solutions];
-                //const index = newSolutions.findIndex(s => {
-                //    return s.id === solution?.id
-                //});
-                //if(index >= 0){
-                //    newSolutions[index] = data;
-                //    setSolutions(newSolutions);
-                //}
+                setSolution(data);
             })
     }
 
@@ -43,19 +34,22 @@ const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution, solutions, 
                 <div className="colorCell">
                     <SerpentinInput
                         index={0}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="empty_cell"></div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={4}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="cell">-</div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={5}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="empty_cell"></div>
                 <div className="cell">66</div>
@@ -87,32 +81,37 @@ const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution, solutions, 
                 <div className="colorCell">
                     <SerpentinInput
                         index={1}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="empty_cell"></div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={3}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="empty_cell"></div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={6}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="empty_cell"></div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={8}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
 
                 <div className="cell">:</div>
                 <div className="colorCell">
                     <SerpentinInput
                         index={2}
-                        solution={tempSol}/>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/>
                 </div>
                 <div className="cell">+</div>
                 <div className="empty_cell"></div>
@@ -120,12 +119,13 @@ const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution, solutions, 
                 <div className="colorCell">
                     <SerpentinInput
                         index={7}
-                        solution={tempSol}/></div>
+                        solutionTemp={tempSol}
+                        setSolutionTemp={setTempSol}/></div>
                 <div className="cell">:</div>
 
             </div>
             <Button
-                variant='text'
+                variant='outlined'
                 style={{
                     marginTop: "1em",
                     marginLeft: '0.25em',

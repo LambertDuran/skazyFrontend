@@ -5,7 +5,8 @@ import {useState, useEffect} from "react";
 
 interface SerpentinInputProps {
     index: number;
-    solution: Solution | null,
+    solutionTemp: Solution | null;
+    setSolutionTemp: (sol: Solution | null) => void;
 }
 
 const CustomSelect = styled(Select)<SelectProps>(({theme}) => ({
@@ -18,21 +19,24 @@ const CustomSelect = styled(Select)<SelectProps>(({theme}) => ({
 
 const SerpentinInput: React.FC<SerpentinInputProps> = ({
                                                            index,
-                                                           solution,
+                                                           solutionTemp,
+                                                           setSolutionTemp
                                                        }) => {
     const availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     const [currentValue, setCurrentValue] =
-        useState<number | null>(solution ? solution.unknowns[index] : null);
+        useState<number | null>(solutionTemp ? solutionTemp.unknowns[index] : null);
 
     useEffect(() => {
-        if(solution)setCurrentValue(solution.unknowns[index])
-    }, [solution]);
+        if(solutionTemp)setCurrentValue(solutionTemp.unknowns[index])
+    }, [solutionTemp]);
 
     const handleChange = (event: any) => {
-        if (!solution) return;
+        if (!solutionTemp) return;
         setCurrentValue(parseInt(event.target.value));
-        solution.unknowns[index] = parseInt(event.target.value);
+        let newSol = {...solutionTemp};
+        newSol.unknowns[index] = parseInt(event.target.value);
+        setSolutionTemp(newSol);
     }
 
     return (

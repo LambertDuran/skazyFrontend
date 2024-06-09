@@ -82,8 +82,7 @@ function App() {
     return (
         <div className="App">
             <div id="serpentin" className="serpentin">
-                <Serpentin solution={solution} setSolution={setSolution} solutions={solutions}
-                           setSolutions={setSolutions}></Serpentin>
+                <Serpentin solution={solution} setSolution={setSolution}/>
             </div>
             <div className='solutions'>
                 <div>
@@ -133,8 +132,6 @@ function App() {
                                     <ListItemText
                                         primary={sol.unknowns.toString()}
                                         onClick={() => {
-                                            const element = document.getElementById("serpentin");
-                                            element!.scrollIntoView({behavior: "smooth"});
                                             setSolution(sol)
                                         }}
                                         className={sol.id === solution!.id ? 'active_sol' : ''}
@@ -152,8 +149,6 @@ function App() {
                                 onChange={(event: React.ChangeEvent<unknown>,
                                            page: number) => {
                                     setPage(page);
-                                    const element = document.getElementById("serpentin");
-                                    element!.scrollIntoView({behavior: "smooth"});
                                 }}/>}
             </div>
         </div>
