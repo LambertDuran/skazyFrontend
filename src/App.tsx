@@ -27,11 +27,11 @@ function App() {
     const [page, setPage] = useState(1);
     const [filteredSolutions, setFilteredSolutions] = useState<Solution[] | null>(null);
 
-    async function HandleClickGenerate() {
+    async function handleClickGenerate() {
         setIsLoading(true);
         setSolutions(null);
         setTime(null);
-        const response = await generateSolutions()
+        await generateSolutions()
             .then(res => res.json())
             .then(data => {
                 setTime(data.time);
@@ -45,8 +45,8 @@ function App() {
         setIsLoading(false);
     }
 
-    async function HandleClickDeleteAll() {
-        const response = await deleteSolutions()
+    async function handleClickDeleteAll() {
+        await deleteSolutions()
             .then(s => {
                 setTime(null);
                 setSolution(null);
@@ -55,20 +55,19 @@ function App() {
             });
     }
 
-    async function HandleClickDelete(id: number) {
-        if(!solutions) return;
-        const response = await deleteSolution(id)
+    async function handleClickDelete(id: number) {
+        if (!solutions) return;
+        await deleteSolution(id)
             .then(s => {
                 deleteSolution(id)
                 setSolutions(solutions.filter(s => s.id !== id));
-                if(filteredSolutions) setFilteredSolutions(filteredSolutions.filter(s => s.id !== id));
+                if (filteredSolutions) setFilteredSolutions(filteredSolutions.filter(s => s.id !== id));
             })
     }
 
-    function handleChange (event: any) {
+    function handleSearchChange(event: any) {
         const search = event.target.value;
-        console.log('search', search);
-        if(!search) {
+        if (!search) {
             setFilteredSolutions(solutions);
             return;
         }
@@ -83,7 +82,8 @@ function App() {
     return (
         <div className="App">
             <div id="serpentin" className="serpentin">
-                <Serpentin solution={solution} setSolution={setSolution}></Serpentin>
+                <Serpentin solution={solution} setSolution={setSolution} solutions={solutions}
+                           setSolutions={setSolutions}></Serpentin>
             </div>
             <div className='solutions'>
                 <div>
@@ -91,7 +91,7 @@ function App() {
                         label="Recherche"
                         variant="standard"
                         className="recherche"
-                        onChange={handleChange}
+                        onChange={handleSearchChange}
                         sx={{
                             '& .MuiInput-underline:before': {
                                 borderBottomColor: '#1976d2', // Couleur des contours avant focus
@@ -114,11 +114,11 @@ function App() {
                         }}/>
                     <Button
                         variant="outlined"
-                        onClick={HandleClickDeleteAll}
+                        onClick={handleClickDeleteAll}
                         style={{marginRight: "1em"}}>
                         Tout supprimer</Button>
                     <Button variant="outlined"
-                            onClick={HandleClickGenerate}>
+                            onClick={handleClickGenerate}>
                         Générer toutes les
                         solutions</Button>
                     {isLoading && <CircularProgress/>}
@@ -141,9 +141,7 @@ function App() {
                                     />
                                 </ListItemButton>
                                 <Button variant="contained"
-                                        onClick={() => {
-                                            HandleClickDelete(sol.id)
-                                        }}>
+                                        onClick={() => handleClickDelete(sol.id)}>
                                     x
                                 </Button>
                             </ListItem>)}

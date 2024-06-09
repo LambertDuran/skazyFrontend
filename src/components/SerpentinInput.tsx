@@ -4,7 +4,6 @@ import {Solution} from "../interfaces/solution";
 import {useState, useEffect} from "react";
 
 interface SerpentinInputProps {
-    unknown: number | null;
     index: number;
     solution: Solution | null,
 }
@@ -18,18 +17,17 @@ const CustomSelect = styled(Select)<SelectProps>(({theme}) => ({
 }));
 
 const SerpentinInput: React.FC<SerpentinInputProps> = ({
-                                                           unknown,
                                                            index,
                                                            solution,
                                                        }) => {
     const availableValues = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     const [currentValue, setCurrentValue] =
-        useState<number | null>(unknown);
+        useState<number | null>(solution ? solution.unknowns[index] : null);
 
     useEffect(() => {
-        setCurrentValue(unknown);
-    }, [unknown])
+        if(solution)setCurrentValue(solution.unknowns[index])
+    }, [solution]);
 
     const handleChange = (event: any) => {
         if (!solution) return;
