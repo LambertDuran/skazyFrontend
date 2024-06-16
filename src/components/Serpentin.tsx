@@ -8,23 +8,35 @@ import {useEffect, useState} from "react";
 interface SerpentinProps {
     solution: Solution | null;
     setSolution: (sol: Solution | null) => void;
+    solutions: Solution[] | null;
+    setSolutions: (sols: Solution[] | null) => void;
 }
 
-const Serpentin: React.FC<SerpentinProps> = ({solution, setSolution}) => {
+const Serpentin: React.FC<SerpentinProps> = ({
+                                                 solution,
+                                                 setSolution,
+                                                 solutions,
+                                                 setSolutions
+                                             }) => {
 
     const [tempSol, setTempSol] = useState<Solution | null>(null);
 
     useEffect(() => {
-        setTempSol(solution ? {...solution} : null);
+        setTempSol(solution ? JSON.parse(JSON.stringify(solution)) : null);
     }, [solution]);
 
 
     async function handleModify() {
-        if (!tempSol) return;
+        if (!tempSol || !solutions) return;
         await updateSolution(tempSol)
             .then(res => res.json())
             .then(data => {
                 setSolution(data);
+                let newSolutions = JSON.parse(JSON.stringify(solutions));
+                const index = solutions?.findIndex(s => s.id === tempSol.id);
+                if(index < 0) return;
+                newSolutions[index] = data;
+                setSolutions(newSolutions);
             })
     }
 

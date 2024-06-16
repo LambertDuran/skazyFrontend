@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 
 import {Solution} from "./interfaces/solution";
@@ -26,6 +26,10 @@ function App() {
     const [solution, setSolution] = useState<Solution | null>(null);
     const [page, setPage] = useState(1);
     const [filteredSolutions, setFilteredSolutions] = useState<Solution[] | null>(null);
+
+    useEffect(() => {
+        setFilteredSolutions(solutions);
+    }, [solutions]);
 
     async function handleClickGenerate() {
         setIsLoading(true);
@@ -82,7 +86,11 @@ function App() {
     return (
         <div className="App">
             <div id="serpentin" className="serpentin">
-                <Serpentin solution={solution} setSolution={setSolution}/>
+                <Serpentin
+                    solution={solution}
+                    setSolution={setSolution}
+                    solutions={solutions}
+                    setSolutions={setSolutions}/>
             </div>
             <div className='solutions'>
                 <div>
@@ -115,11 +123,13 @@ function App() {
                         variant="outlined"
                         onClick={handleClickDeleteAll}
                         style={{marginRight: "1em"}}>
-                        Tout supprimer</Button>
+                        Tout supprimer
+                    </Button>
                     <Button variant="outlined"
                             onClick={handleClickGenerate}>
                         Générer toutes les
-                        solutions</Button>
+                        solutions
+                    </Button>
                     {isLoading && <CircularProgress/>}
                 </div>
                 {time && <p>Temps de calcul : {time}s </p>}
